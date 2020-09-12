@@ -1,6 +1,6 @@
 <script>
   let canvas, ctx, img;
-   let GA = 0.1;
+  let GA = 0.1;
   let filterstate = false;
   let slowstate = "slo-mo";
   let gridNum = 10;
@@ -14,12 +14,12 @@
   let cw = 800;
   let img2 = new Image();
   import { onMount } from "svelte";
-  onMount(()=> {
-      canvas.height = ch
-      canvas.width = cw
-  })
-  let handleFiles = (e) => {
-      let URL = window.webkitURL || window.URL
+  onMount(() => {
+    canvas.height = ch;
+    canvas.width = cw;
+  });
+  let handleFiles = e => {
+    let URL = window.webkitURL || window.URL;
     ctx = canvas.getContext("2d");
     img = new Image();
     img.onload = () => {
@@ -42,7 +42,7 @@
       );
       img2.src = canvas.toDataURL();
     };
-    let url = URL.createObjectURL(e.target.files[0])
+    let url = URL.createObjectURL(e.target.files[0]);
     img.src = url;
 
     // make the grid
@@ -122,7 +122,7 @@
   };
 
   let func = () => {
-      if (ctx == undefined) return
+    if (ctx == undefined) return;
 
     canvas.width = cw;
     canvas.height = ch;
@@ -140,12 +140,12 @@
     );
   };
   $: if (GA) {
-    console.log(sx, sy,  GA,zoom);
+    console.log(sx, sy, GA, zoom);
     func();
   }
   let grid = () => {
-      if (ctx == undefined) return 
-      console.log("running grid")
+    if (ctx == undefined) return;
+    console.log("running grid");
     canvas.width = img.width;
     canvas.height = img.height;
     let conversion = img.width / canvas.width;
@@ -182,27 +182,41 @@
     grid();
   }
 </script>
+
 <style>
-canvas {
-    position:relative;
-    z-index:20;
-}</style>
+  canvas {
+    position: relative;
+    z-index: 20;
+  }
+</style>
 
 <canvas bind:this={canvas} />
-<input type="file" on:change={handleFiles}>
-<label for="">
-  zoom
-  <input type="text" min="0" max="1" bind:value={zoom} />
-  <input type="range" min="0" max="1" step=".0001" bind:value={zoom} />
-</label>
-<label for="">
-  grid
-  <input type="text" min="5" max="20" bind:value={gridNum} />
-  <input type="range" min="5" max="20" step="1" bind:value={gridNum} />
-</label>
-<label for="">
-  Global Alpha
-  <input type="text" min="0" max="1" bind:value={GA} />
-  <input type="range" min="0" max="1" step=".001" bind:value={GA} />
-</label>
+<div id="holder">
+  <div id="fileupload">
+    <input type="file" on:change={handleFiles} />
+  </div>
+  <div id="zoom">
+    <label for="">
+      zoom
+      <input type="text" min="0" max="1" bind:value={zoom} />
+      <input type="range" min="0" max="1" step=".0001" bind:value={zoom} />
+    </label>
+  </div>
+  <div id="grid">
+    <label for="">
+      grid
+      <input type="text" min="5" max="20" bind:value={gridNum} />
+      <input type="range" min="5" max="20" step="1" bind:value={gridNum} />
+    </label>
+  </div>
+  <div id="GA">
+    <label for="">
+      Global Alpha
+      <input type="text" min="0" max="1" bind:value={GA} />
+      <input type="range" min="0" max="1" step=".001" bind:value={GA} />
+    </label>
+  </div>
+  <div id="slowmo">
 <button on:click={slowFunc}>{slowstate}</button>
+  </div>
+</div>
