@@ -15,7 +15,7 @@
   let img2 = new Image();
   import { onMount } from "svelte";
   onMount(() => {
-    canvas.height = ch+500;
+    canvas.height = ch;
     canvas.width = cw;
   });
   let handleFiles = e => {
