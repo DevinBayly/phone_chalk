@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "camera.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\n  let video;\n  import { onMount } from \"svelte\";\n  onMount(() => {\n    if (navigator.mediaDevices.getUserMedia) {\n      navigator.mediaDevices\n        .getUserMedia({\n          video: true\n          //{\n            // facingMode: {\n            //   exact: \"environment\"\n            // }\n          //}\n        })\n        .then(function(stream) {\n          video.srcObject = stream;\n          const track = stream.getVideoTracks()[0];\n          //Create image capture object and get camera capabilities\n          const imageCapture = new ImageCapture(track);\n          const photoCapabilities = imageCapture\n            .getPhotoCapabilities()\n            .then(() => {\n              //todo: check if camera has a torch\n              let btn = document.querySelector(\"#flashlight\");\n              btn.style.position = \"absolute\";\n              btn.style[\"z-index\"] = 200;\n              btn.addEventListener(\"click\", () => {\n                //let there be light!\n                track.applyConstraints({\n                  advanced: [{ torch: true }]\n                });\n              });\n            });\n        })\n        .catch(function(err0r) {\n          console.log(\"Something went wrong!\", err0r);\n        });\n    }\n  });\n</script>\n\n<style>\nvideo{\n    position:absolute;\n}</style>\n<video bind:this={video} autoplay playsinline />\n"
+  ],
+  "names": [],
+  "mappings": "AA0CA,oBAAK,CAAC,AACF,SAAS,QAAQ,AACrB,CAAC"
+}
