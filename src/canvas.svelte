@@ -186,6 +186,7 @@ export let ch,cw
   canvas {
     position: absolute;
     top:0px;
+    left:0px;
     z-index: 20;
   }
 </style>
