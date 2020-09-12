@@ -161,7 +161,7 @@ export let ch,cw
     );
     // makee the x grid
     ctx.lineWidth = 1;
-    ctx.strokeStyle = "white";
+    ctx.strokeStyle = "red";
     for (let i = 0; i < gridNum; i++) {
       ctx.beginPath();
       ctx.moveTo(0, (canvas.height / gridNum) * i);
