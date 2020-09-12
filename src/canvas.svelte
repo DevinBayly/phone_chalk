@@ -134,8 +134,8 @@ export let ch,cw
       img.height * zoom,
       0,
       0,
-      canvas.width,
-      (img.height * canvas.width) / img.width
+      img.width*canvas.height / img.height,
+      canvas.height
     );
   };
   $: if (GA) {
