@@ -1,4 +1,5 @@
 <script>
+export let ch,cw
   let canvas, ctx, img;
   let GA = 0.1;
   let filterstate = false;
@@ -10,8 +11,6 @@
   let sy = 0;
   let maxX = 0;
   let maxY = 0;
-  let ch = 500;
-  let cw = 800;
   let img2 = new Image();
   import { onMount } from "svelte";
   onMount(() => {

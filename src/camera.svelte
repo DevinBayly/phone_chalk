@@ -1,5 +1,6 @@
 <script>
   let video;
+  import Canvas from "./canvas.svelte"
   import { onMount } from "svelte";
   onMount(() => {
     if (navigator.mediaDevices.getUserMedia) {
@@ -30,6 +31,15 @@
                   advanced: [{ torch: true }]
                 });
               });
+              let vbox = video.getBoundingClientRect()
+              let c =new Canvas({
+                  target:document.body,
+                  props:{
+                      ch:vbox.height,
+                      cw:vbox.width
+                  }
+              })
+              
             });
         })
         .catch(function(err0r) {
