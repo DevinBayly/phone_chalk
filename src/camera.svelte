@@ -1,13 +1,12 @@
 <script>
   let video;
-  import Canvas from "./canvas.svelte"
+  import Canvas from "./canvas.svelte";
   import { onMount } from "svelte";
   onMount(() => {
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
         .getUserMedia({
-          video: 
-          {
+          video: {
             facingMode: {
               exact: "environment"
             }
@@ -21,25 +20,24 @@
           const photoCapabilities = imageCapture
             .getPhotoCapabilities()
             .then(() => {
-              //todo: check if camera has a torch
-              let btn = document.querySelector("#flashlight");
-              btn.style.position = "absolute";
-              btn.style["z-index"] = 200;
-              btn.addEventListener("click", () => {
-                //let there be light!
-                track.applyConstraints({
-                  advanced: [{ torch: true }]
-                });
+              let vbox = video.getBoundingClientRect();
+              let c = new Canvas({
+                target: document.body,
+                props: {
+                  ch: vbox.height,
+                  cw: vbox.width
+                }
               });
-              let vbox = video.getBoundingClientRect()
-              let c =new Canvas({
-                  target:document.body,
-                  props:{
-                      ch:vbox.height,
-                      cw:vbox.width
-                  }
-              })
-              
+              //todo: check if camera has a torch
+              setTimeout(() => {
+                let btn = document.querySelector("#flashlight");
+                btn.addEventListener("click", () => {
+                  //let there be light!
+                  track.applyConstraints({
+                    advanced: [{ torch: true }]
+                  });
+                });
+              }, 1000);
             });
         })
         .catch(function(err0r) {
@@ -50,8 +48,10 @@
 </script>
 
 <style>
-video{
-    position:relative;
-    z-index:5;
-}</style>
+  video {
+    position: relative;
+    z-index: 5;
+  }
+</style>
+
 <video bind:this={video} autoplay playsinline />

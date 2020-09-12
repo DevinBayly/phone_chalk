@@ -219,4 +219,9 @@ export let ch,cw
   <div id="slowmo">
 <button on:click={slowFunc}>{slowstate}</button>
   </div>
+  <div id="flash">
+  <button id="flashlight">
+  flashlight
+  </button>
+  </div>
 </div>
