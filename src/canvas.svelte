@@ -185,7 +185,7 @@
 
 <style>
   canvas {
-    position: relative;
+    position: absolute;
     z-index: 20;
   }
 </style>
