@@ -42,5 +42,6 @@
 <style>
 video{
     position:absolute;
+    z-index:5;
 }</style>
 <video bind:this={video} autoplay playsinline />

@@ -14,6 +14,10 @@
   let cw = 800;
   let img2 = new Image();
   import { onMount } from "svelte";
+  onMount(()=> {
+      canvas.height = ch
+      canvas.width = cw
+  })
   let handleFiles = (e) => {
       let URL = window.webkitURL || window.URL
     ctx = canvas.getContext("2d");
@@ -178,6 +182,11 @@
     grid();
   }
 </script>
+<style>
+canvas {
+    position:relative;
+    z-index:20;
+}</style>
 
 <canvas bind:this={canvas} />
 <input type="file" on:change={handleFiles}>
