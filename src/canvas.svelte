@@ -44,7 +44,7 @@
       img2.src = canvas.toDataURL();
     };
     let url = URL.createObjectURL(e.target.files[0]);
-    //img.src = "chad.png";
+    img.src = url;
 
     // make the grid
 
