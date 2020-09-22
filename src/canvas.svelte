@@ -26,21 +26,21 @@
     img.onload = () => {
       maxX = img.width;
       maxY = img.height;
-      canvas.width = img.width;
-      canvas.height = img.height;
-      let conversion = img.width / canvas.width;
-      //
-      ctx.drawImage(
-        img,
-        0,
-        0,
-        img.width,
-        img.height,
-        0,
-        0,
-        canvas.width,
-        img.height / conversion
-      );
+
+    canvas.width = cw;
+    canvas.height = ch;
+    ctx.globalAlpha = GA;
+    ctx.drawImage(
+      img,
+      sx,
+      sy,
+      img.width * zoom,
+      img.height * zoom,
+      0,
+      0,
+      (img.width * canvas.height) / img.height,
+      canvas.height
+    );
       img2.src = canvas.toDataURL();
     };
     let url = URL.createObjectURL(e.target.files[0]);
@@ -246,6 +246,11 @@
     top:0px;
     left:0px;
     z-index: 20;
+  }
+  #holder {
+    position:relative;
+    z-index:30;
+    background:white;
   }
 </style>
 
