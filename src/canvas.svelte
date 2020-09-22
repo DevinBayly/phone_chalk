@@ -16,9 +16,8 @@
   export let ch, cw;
   import { onMount } from "svelte";
   onMount(() => {
-    handleFiles();
-    // canvas.height = ch;
-    // canvas.width = cw;
+     canvas.height = ch;
+     canvas.width = cw;
   });
   let handleFiles = e => {
     let URL = window.webkitURL || window.URL;
@@ -44,8 +43,8 @@
       );
       img2.src = canvas.toDataURL();
     };
-    //let url = URL.createObjectURL(e.target.files[0]);
-    img.src = "chad.png";
+    let url = URL.createObjectURL(e.target.files[0]);
+    //img.src = "chad.png";
 
     // make the grid
 
@@ -242,12 +241,12 @@
 </script>
 
 <style>
-  /* canvas {
+  canvas {
     position: absolute;
     top:0px;
     left:0px;
     z-index: 20;
-  } */
+  }
 </style>
 
 <canvas bind:this={canvas} />
