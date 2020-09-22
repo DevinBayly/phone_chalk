@@ -1,6 +1,7 @@
 <script>
-export let ch,cw
   let canvas, ctx, img;
+  let markstate = "mark-off";
+  let swap = false;
   let GA = 0.1;
   let filterstate = false;
   let slowstate = "slo-mo";
@@ -12,10 +13,12 @@ export let ch,cw
   let maxX = 0;
   let maxY = 0;
   let img2 = new Image();
+  export let ch, cw;
   import { onMount } from "svelte";
   onMount(() => {
-    canvas.height = ch;
-    canvas.width = cw;
+    handleFiles();
+    // canvas.height = ch;
+    // canvas.width = cw;
   });
   let handleFiles = e => {
     let URL = window.webkitURL || window.URL;
@@ -41,8 +44,8 @@ export let ch,cw
       );
       img2.src = canvas.toDataURL();
     };
-    let url = URL.createObjectURL(e.target.files[0]);
-    img.src = url;
+    //let url = URL.createObjectURL(e.target.files[0]);
+    img.src = "chad.png";
 
     // make the grid
 
@@ -54,28 +57,37 @@ export let ch,cw
       "touchstart",
       function(e) {
         var touches = e.touches[0];
-        start = {
-          x: touches.clientX * slow,
-          y: touches.clientY * slow
-        };
+        if (markstate == "mark-on") {
+          // make mark function
+          storeMark(touches.clientX, touches.clientY);
+        } else {
+          start = {
+            x: touches.clientX * slow,
+            y: touches.clientY * slow
+          };
+        }
       },
       false
     );
     canvas.addEventListener("touchmove", function(e) {
-      var touch = e.touches[0];
-      moving = {
-        x: touch.clientX * slow,
-        y: touch.clientY * slow
-      };
-      let delta = { x: start.x - moving.x, y: start.y - moving.y };
-      sx = last.x + delta.x;
-      sy = last.y + delta.y;
+      if (markstate != "mark-on") {
+        var touch = e.touches[0];
+        moving = {
+          x: touch.clientX * slow,
+          y: touch.clientY * slow
+        };
+        let delta = { x: start.x - moving.x, y: start.y - moving.y };
+        sx = last.x + delta.x;
+        sy = last.y + delta.y;
+      }
     });
     canvas.addEventListener("touchend", function(e) {
-      last = {
-        x: last.x + (start.x - moving.x),
-        y: last.y + (start.y - moving.y)
-      };
+      if (markstate != "mark-on") {
+        last = {
+          x: last.x + (start.x - moving.x),
+          y: last.y + (start.y - moving.y)
+        };
+      }
     });
     // Prevent scrolling when touching the canvas
     document.body.addEventListener(
@@ -106,7 +118,46 @@ export let ch,cw
       { passive: false }
     );
   };
-
+  let reset = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    let conversion = img.width / canvas.width;
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      img.width,
+      img.height,
+      0,
+      0,
+      canvas.width,
+      img.height / conversion
+    );
+    img2.src = canvas.toDataURL();
+  };
+  let storeMark = (x, y) => {
+    if (swap) {
+      canvas.width = img.width;
+      canvas.height = img.height;
+      let conversion = img.width / canvas.width;
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        img.width,
+        img.height,
+        0,
+        0,
+        canvas.width,
+        img.height / conversion
+      );
+      swap = false;
+    } else {
+      ctx.fillStyle = "red";
+      ctx.fillRect(x, y, 5, 5);
+      img2.src = canvas.toDataURL();
+    }
+  };
   let slowFunc = () => {
     if (slow == 1) {
       slow = 0.1;
@@ -117,6 +168,14 @@ export let ch,cw
     } else {
       slow = 1;
       slowstate = "slo-mo";
+    }
+  };
+  let markFunc = () => {
+    if (markstate == "mark-on") {
+      markstate = "mark-off";
+    } else {
+      markstate = "mark-on";
+      swap = true;
     }
   };
 
@@ -134,7 +193,7 @@ export let ch,cw
       img.height * zoom,
       0,
       0,
-      img.width*canvas.height / img.height,
+      (img.width * canvas.height) / img.height,
       canvas.height
     );
   };
@@ -183,12 +242,12 @@ export let ch,cw
 </script>
 
 <style>
-  canvas {
+  /* canvas {
     position: absolute;
     top:0px;
     left:0px;
     z-index: 20;
-  }
+  } */
 </style>
 
 <canvas bind:this={canvas} />
@@ -218,11 +277,13 @@ export let ch,cw
     </label>
   </div>
   <div id="slowmo">
-<button on:click={slowFunc}>{slowstate}</button>
+    <button on:click={slowFunc}>{slowstate}</button>
+  </div>
+  <div id="mark">
+    <button on:click={markFunc}>{markstate}</button>
   </div>
   <div id="flash">
-  <button id="flashlight">
-  flashlight
-  </button>
+    <button id="flashlight">flashlight</button>
+    <button on:click={reset}>Reset</button>
   </div>
 </div>
