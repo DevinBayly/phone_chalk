@@ -1,4 +1,5 @@
 <script>
+//TODO make the program work for images that are taller than they are wide also.
   export let cw,ch
   let canvas;
   let editor = (() => ({
@@ -92,8 +93,8 @@
     };
     // load chad,
     // then have second image that you store the canvas as
-    canvas.height = cw;
-    canvas.width = ch;
+    canvas.height = ch;
+    canvas.width = cw;
 
     let last = { x: 0, y: 0 };
     let start;
