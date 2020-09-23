@@ -1,5 +1,6 @@
 <script>
-	export let name;
-	import Camera from "./camera.svelte"
+	//import Camera from "./camera.svelte"
+	import Test from "./test.svelte"
 </script>
-<Camera></Camera>
+<!-- <Camera></Camera> -->
+<Test></Test>

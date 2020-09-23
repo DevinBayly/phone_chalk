@@ -1,5 +1,6 @@
 <script>
-  let canvas, ctx, img;
+  let canvas,ocanvas,octx, ctx, img;
+  ocanvas = document.createElement("canvas")
   let markstate = "mark-off";
   let swap = false;
   let GA = 0.1;
@@ -13,6 +14,27 @@
   let maxX = 0;
   let maxY = 0;
   let img2 = new Image();
+  let drawCanvas = () => {
+    let finalwidth, finalheight;
+    if (img.height > img.width) {
+      finalwidth = (canvas.width * img.width) / img.height;
+      finalheight = canvas.height;
+    } else {
+      finalwidth = canvas.width;
+      finalheight = (canvas.height * img.height) / img.width;
+    }
+    ctx.drawImage(
+      img2,
+      sx,
+      sy,
+      img.width * zoom,
+      img.height * zoom,
+      0,
+      0,
+      finalwidth,
+      finalheight
+    );
+  };
   export let ch, cw;
   import { onMount } from "svelte";
   onMount(() => {
