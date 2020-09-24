@@ -15,7 +15,8 @@
     mark(x, y) {
       let bbox = canvas.getBoundingClientRect();
       octx.fillStyle = "red";
-      x = x * (img.width / canvas.width) * img.width/img.height* zoom + sx - bbox.left;
+      let factor = canvas.height/img.height
+      x = x / canvas.width * img.width* zoom + sx - bbox.left;
       y = y * (img.height / canvas.height)  * zoom +
         sy -
         bbox.top;
