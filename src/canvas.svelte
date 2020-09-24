@@ -52,11 +52,12 @@
   let drawCanvas = () => {
     if (canvas == undefined) return;
     let finalwidth, finalheight;
+    let factor = canvas.height/img.height
     if (img.height > img.width) {
       finalwidth = (canvas.width * img.width) / img.height;
       finalheight = canvas.height;
     } else {
-      finalwidth = canvas.width*img.height/canvas.height;
+      finalwidth =img.width *factor ;
       finalheight = canvas.height ;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
