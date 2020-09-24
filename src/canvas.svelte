@@ -56,7 +56,7 @@
       finalwidth = (canvas.width * img.width) / img.height;
       finalheight = canvas.height;
     } else {
-      finalwidth = canvas.width*canvas.height/image.height;
+      finalwidth = canvas.width*canvas.height/img.height;
       finalheight = canvas.height ;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
