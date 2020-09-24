@@ -16,7 +16,7 @@
       let bbox = canvas.getBoundingClientRect();
       octx.fillStyle = "red";
       let factor = canvas.height/img.height
-      x = x / canvas.width * img.width* zoom + sx - bbox.left;
+      x = x * zoom + sx - bbox.left;
       y = y * (img.height / canvas.height)  * zoom +
         sy -
         bbox.top;
