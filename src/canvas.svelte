@@ -1,22 +1,25 @@
 <script>
-//TODO make the program work for images that are taller than they are wide also.
-  export let cw,ch
+  //TODO make the program work for images that are taller than they are wide also.
+  export let cw, ch;
   let canvas;
   let editor = (() => ({
     on: false,
     active() {
       return this.on;
     },
-    run(x,y) {
+    run(x, y) {
       if (markstate == "mark-on") {
-        this.mark(x,y)
+        this.mark(x, y);
       }
     },
     mark(x, y) {
-      let bbox = canvas.getBoundingClientRect()
+      let bbox = canvas.getBoundingClientRect();
       octx.fillStyle = "red";
-      x = (x)*(img.width/canvas.width)*zoom  + sx - bbox.left
-      y = y*(img.height/canvas.height)*(img.width/img.height)*zoom+sy -bbox.top
+      x = x * (img.width / canvas.width) * zoom + sx - bbox.left;
+      y =
+        y * (img.height / canvas.height) * (img.width / img.height) * zoom +
+        sy -
+        bbox.top;
       octx.fillRect(x, y, 5, 5);
       img2.src = offscreen.toDataURL();
     }
@@ -58,7 +61,7 @@
       finalheight = (canvas.height * img.height) / img.width;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.globalAlpha = GA
+    ctx.globalAlpha = GA;
     ctx.drawImage(
       img2,
       sx,
@@ -71,7 +74,8 @@
       finalheight
     );
   };
-  onMount(() => {
+  let handlefile = (e)=> {
+    let file = e.target.files[0]
     offscreen = document.createElement("canvas");
     ctx = canvas.getContext("2d");
     octx = offscreen.getContext("2d");
@@ -87,10 +91,12 @@
       //ctx.drawImage(img2,0,0,offscreen.width,offscreen.height,0,0,canvas.width,canvas.height)
       //ctx.putImageData(data,0,0)
     };
-    img.src = "chad.png";
+    img.src = URL.createObjectURL(file);
     img2.onload = () => {
       drawCanvas();
     };
+  }
+  onMount(() => {
     // load chad,
     // then have second image that you store the canvas as
     canvas.height = ch;
@@ -107,7 +113,7 @@
           x: touches.clientX * slow,
           y: touches.clientY * slow
         };
-        editor.run(start.x,start.y)
+        editor.run(start.x, start.y);
       },
       false
     );
@@ -161,23 +167,27 @@
     drawCanvas();
   }
 </script>
+
 <style>
   canvas {
     position: absolute;
-    top:0px;
-    left:0px;
+    top: 0px;
+    left: 0px;
     z-index: 20;
   }
   #holder {
-    position:relative;
-    z-index:30;
-    background:white;
+    position: relative;
+    z-index: 30;
+    background: white;
   }
 </style>
+
 <canvas bind:this={canvas} />
 
 <div id="holder">
-  <div id="fileupload" />
+  <div id="fileupload">
+    <input type="file" on:change={handlefile} />
+  </div>
   <div id="zoom">
     <label for="">
       zoom
