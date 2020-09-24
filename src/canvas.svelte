@@ -15,9 +15,8 @@
     mark(x, y) {
       let bbox = canvas.getBoundingClientRect();
       octx.fillStyle = "red";
-      x = x * (img.width / canvas.width) * zoom + sx - bbox.left;
-      y =
-        y * (img.height / canvas.height) * (img.width / img.height) * zoom +
+      x = x * (img.width / canvas.width) * img.width/img.height* zoom + sx - bbox.left;
+      y = y * (img.height / canvas.height)  * zoom +
         sy -
         bbox.top;
       octx.fillRect(x, y, 5, 5);
@@ -57,8 +56,8 @@
       finalwidth = (canvas.width * img.width) / img.height;
       finalheight = canvas.height;
     } else {
-      finalwidth = canvas.width;
-      finalheight = (canvas.height * img.height) / img.width;
+      finalwidth = canvas.width*img.width/img.height;
+      finalheight = canvas.height ;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = GA;
