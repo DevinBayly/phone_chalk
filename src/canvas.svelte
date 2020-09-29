@@ -15,11 +15,9 @@
     mark(x, y) {
       let bbox = canvas.getBoundingClientRect();
       octx.fillStyle = "red";
-      let factor = canvas.height/img.height
-      x = x * zoom + sx - bbox.left;
-      y = y * (img.height / canvas.height)  * zoom +
-        sy -
-        bbox.top;
+      let factor = canvas.height / img.height;
+      x = x * (img.height / canvas.height)* zoom + sx - bbox.left;
+      y = y * (img.height / canvas.height) * zoom + sy - bbox.top;
       octx.fillRect(x, y, 5, 5);
       img2.src = offscreen.toDataURL();
     }
@@ -32,12 +30,25 @@
   let slowstate = 0;
   let slow = 1;
   let markstate = "mark-off";
+  let slowState = "slow"
   let img = new Image();
   let img2 = new Image();
   import { onMount } from "svelte";
   let sx = 0,
     sy = 0,
     zoom = 1;
+  let slowFunc  = ()=>{
+    if (slowState == "slow") {
+      slowState = "super-slow"
+      slow = .1
+    } else if ( slowState == "super-slow"){
+      slow = .01
+      slowState = "fast"
+    } else if (slowState == "fast"){
+      slowState = "slow"
+      slow = 1
+    }
+  }
   let markFunc = () => {
     if (markstate == "mark-on") {
       markstate = "mark-off";
@@ -53,13 +64,13 @@
   let drawCanvas = () => {
     if (canvas == undefined) return;
     let finalwidth, finalheight;
-    let factor = canvas.height/img.height
+    let factor = canvas.height / img.height;
     if (img.height > img.width) {
       finalwidth = (canvas.width * img.width) / img.height;
       finalheight = canvas.height;
     } else {
-      finalwidth =img.width *factor ;
-      finalheight = canvas.height ;
+      finalwidth = img.width * factor;
+      finalheight = canvas.height;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = GA;
@@ -75,8 +86,9 @@
       finalheight
     );
   };
-  let handlefile = (e)=> {
+  let handlefile = e => {
     let file = e.target.files[0]
+
     offscreen = document.createElement("canvas");
     ctx = canvas.getContext("2d");
     octx = offscreen.getContext("2d");
@@ -93,10 +105,11 @@
       //ctx.putImageData(data,0,0)
     };
     img.src = URL.createObjectURL(file);
+    // img.src = "breonna.jpg";
     img2.onload = () => {
       drawCanvas();
     };
-  }
+  };
   onMount(() => {
     // load chad,
     // then have second image that you store the canvas as
@@ -106,6 +119,7 @@
     let last = { x: 0, y: 0 };
     let start;
     let moving;
+    handlefile();
     canvas.addEventListener(
       "touchstart",
       function(e) {
@@ -125,8 +139,10 @@
         y: touch.clientY * slow
       };
       let delta = { x: start.x - moving.x, y: start.y - moving.y };
-      sx = last.x + delta.x;
-      sy = last.y + delta.y;
+      if (last.x + delta.x > -200 && last.y + delta.y > -200 && last.x + delta.x < img.width && last.y + delta.y < img.height) {
+        sx = last.x + delta.x;
+        sy = last.y + delta.y;
+      }
     });
     canvas.addEventListener("touchend", function(e) {
       last = {
@@ -202,6 +218,9 @@
       <input type="text" min="0" max="1" bind:value={GA} />
       <input type="range" min="0" max="1" step=".001" bind:value={GA} />
     </label>
+  </div>
+  <div id="slow">
+    <button on:click={slowFunc}>{slowState}</button>
   </div>
   <div id="mark">
     <button on:click={markFunc}>{markstate}</button>

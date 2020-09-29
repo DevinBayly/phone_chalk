@@ -1,20 +1,23 @@
 <script>
+  //TODO make the program work for images that are taller than they are wide also.
+  export let cw, ch;
   let canvas;
   let editor = (() => ({
     on: false,
     active() {
       return this.on;
     },
-    run(x,y) {
+    run(x, y) {
       if (markstate == "mark-on") {
-        this.mark(x,y)
+        this.mark(x, y);
       }
     },
     mark(x, y) {
-      let bbox = canvas.getBoundingClientRect()
+      let bbox = canvas.getBoundingClientRect();
       octx.fillStyle = "red";
-      x = (x)*(img.width/canvas.width)*zoom  + sx - bbox.left
-      y = y*(img.height/canvas.height)*(img.width/img.height)*zoom+sy -bbox.top
+      let factor = canvas.height / img.height;
+      x = x * (img.height / canvas.height)* zoom + sx - bbox.left;
+      y = y * (img.height / canvas.height) * zoom + sy - bbox.top;
       octx.fillRect(x, y, 5, 5);
       img2.src = offscreen.toDataURL();
     }
@@ -27,12 +30,25 @@
   let slowstate = 0;
   let slow = 1;
   let markstate = "mark-off";
+  let slowState = "slow"
   let img = new Image();
   let img2 = new Image();
   import { onMount } from "svelte";
   let sx = 0,
     sy = 0,
     zoom = 1;
+  let slowFunc  = ()=>{
+    if (slowState == "slow") {
+      slowState = "super-slow"
+      slow = .1
+    } else if ( slowState == "super-slow"){
+      slow = .01
+      slowState = "fast"
+    } else if (slowState == "fast"){
+      slowState = "slow"
+      slow = 1
+    }
+  }
   let markFunc = () => {
     if (markstate == "mark-on") {
       markstate = "mark-off";
@@ -48,15 +64,16 @@
   let drawCanvas = () => {
     if (canvas == undefined) return;
     let finalwidth, finalheight;
+    let factor = canvas.height / img.height;
     if (img.height > img.width) {
       finalwidth = (canvas.width * img.width) / img.height;
       finalheight = canvas.height;
     } else {
-      finalwidth = canvas.width;
-      finalheight = (canvas.height * img.height) / img.width;
+      finalwidth = img.width * factor;
+      finalheight = canvas.height;
     }
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.globalAlpha = GA
+    ctx.globalAlpha = GA;
     ctx.drawImage(
       img2,
       sx,
@@ -69,7 +86,9 @@
       finalheight
     );
   };
-  onMount(() => {
+  let handlefile = e => {
+    // let file = e.target.files[0]
+
     offscreen = document.createElement("canvas");
     ctx = canvas.getContext("2d");
     octx = offscreen.getContext("2d");
@@ -85,18 +104,22 @@
       //ctx.drawImage(img2,0,0,offscreen.width,offscreen.height,0,0,canvas.width,canvas.height)
       //ctx.putImageData(data,0,0)
     };
-    img.src = "chad.png";
+    // img.src = URL.createObjectURL(file);
+    img.src = "breonna.jpg";
     img2.onload = () => {
       drawCanvas();
     };
+  };
+  onMount(() => {
     // load chad,
     // then have second image that you store the canvas as
-    canvas.height = cw;
-    canvas.width = ch;
+    canvas.height = ch;
+    canvas.width = cw;
 
     let last = { x: 0, y: 0 };
     let start;
     let moving;
+    handlefile();
     canvas.addEventListener(
       "touchstart",
       function(e) {
@@ -105,7 +128,7 @@
           x: touches.clientX * slow,
           y: touches.clientY * slow
         };
-        editor.run(start.x,start.y)
+        editor.run(start.x, start.y);
       },
       false
     );
@@ -116,8 +139,10 @@
         y: touch.clientY * slow
       };
       let delta = { x: start.x - moving.x, y: start.y - moving.y };
-      sx = last.x + delta.x;
-      sy = last.y + delta.y;
+      if (last.x + delta.x > -200 && last.y + delta.y > -200 && last.x + delta.x < img.width && last.y + delta.y < img.height) {
+        sx = last.x + delta.x;
+        sy = last.y + delta.y;
+      }
     });
     canvas.addEventListener("touchend", function(e) {
       last = {
@@ -159,23 +184,29 @@
     drawCanvas();
   }
 </script>
+
 <style>
+  /*
   canvas {
     position: absolute;
-    top:0px;
-    left:0px;
+    top: 0px;
+    left: 0px;
     z-index: 20;
   }
+  */
   #holder {
-    position:relative;
-    z-index:30;
-    background:white;
+    position: relative;
+    z-index: 30;
+    background: white;
   }
 </style>
+
 <canvas bind:this={canvas} />
 
 <div id="holder">
-  <div id="fileupload" />
+  <div id="fileupload">
+    <input type="file" on:change={handlefile} />
+  </div>
   <div id="zoom">
     <label for="">
       zoom
@@ -189,6 +220,9 @@
       <input type="text" min="0" max="1" bind:value={GA} />
       <input type="range" min="0" max="1" step=".001" bind:value={GA} />
     </label>
+  </div>
+  <div id="slow">
+    <button on:click={slowFunc}>{slowState}</button>
   </div>
   <div id="mark">
     <button on:click={markFunc}>{markstate}</button>
