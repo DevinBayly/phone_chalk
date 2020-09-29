@@ -119,7 +119,6 @@
     let last = { x: 0, y: 0 };
     let start;
     let moving;
-    handlefile();
     canvas.addEventListener(
       "touchstart",
       function(e) {
